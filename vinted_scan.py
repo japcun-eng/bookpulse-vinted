@@ -30,6 +30,7 @@ def get(value: Any, name: str, default: Any = None) -> Any:
 def init_db(path: Path) -> sqlite3.Connection:
     path.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(path)
+    db.row_factory = sqlite3.Row
     db.execute("""CREATE TABLE IF NOT EXISTS offers (
         item_id TEXT PRIMARY KEY, title TEXT NOT NULL, author TEXT, isbn TEXT,
         price REAL, currency TEXT, url TEXT, first_seen TEXT NOT NULL,
@@ -75,6 +76,7 @@ def scan(config: dict[str, Any]) -> tuple[int, bool, str | None]:
         raise SystemExit("Brak vinted_scraper. Uruchom: pip install -r requirements.txt") from exc
 
     db = init_db(ROOT / config.get("database", "data/vinted_history.sqlite3"))
+    new_ids: set[str] = set()
     started = now(); seen: set[str] = set(); error = None; completed = True
     scraper = VintedScraper(
         config.get("base_url", "https://www.vinted.pl"),
@@ -98,6 +100,8 @@ def scan(config: dict[str, Any]) -> tuple[int, bool, str | None]:
                 seen.add(row["item_id"])
                 existing = db.execute("SELECT first_seen FROM offers WHERE item_id = ?", (row["item_id"],)).fetchone()
                 first_seen = existing[0] if existing else now()
+                if existing is None:
+                    new_ids.add(row["item_id"])
                 db.execute("""INSERT INTO offers(item_id,title,author,isbn,price,currency,url,first_seen,last_seen,missing_runs,status,raw_json)
                     VALUES(?,?,?,?,?,?,?,?,?,0,'active',?) ON CONFLICT(item_id) DO UPDATE SET
                     title=excluded.title, author=excluded.author, isbn=excluded.isbn, price=excluded.price,
@@ -114,7 +118,13 @@ def scan(config: dict[str, Any]) -> tuple[int, bool, str | None]:
         db.execute("UPDATE offers SET missing_runs = missing_runs + 1, status = CASE WHEN missing_runs + 1 >= 3 THEN 'probably_unavailable' ELSE status END WHERE item_id NOT IN ({})".format(",".join("?" * len(seen))), tuple(seen))
         db.commit()
     db.execute("INSERT INTO scans(started_at,pages_requested,items_seen,completed,error) VALUES(?,?,?,?,?)", (started, pages_seen, len(seen), int(completed), error))
-    db.commit(); db.close()
+    db.commit()
+    try:
+        from alerts import send_new_opportunity_alerts
+        send_new_opportunity_alerts(db, new_ids, float(config.get("min_profit", 20)), int(config.get("max_alerts_per_scan", 5)))
+    except Exception as exc:
+        print(f"Alert warning: {type(exc).__name__}: {exc}")
+    db.close()
     return len(seen), completed, error
 
 

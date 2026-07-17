@@ -23,6 +23,17 @@ Panel demonstracyjny korzysta z `data/listings.csv`. Skaner Vinted jest osobnym,
 
 Tryb ciągły: `python vinted_scan.py --watch`. Domyślnie powtarza skan co godzinę; zatrzymasz go przez `Ctrl+C`.
 
+## Alerty Telegram
+
+Alerty są domyślnie wyłączone. Aby je włączyć, ustaw zmienne środowiskowe przed uruchomieniem skanera:
+
+```powershell
+$env:BOOKPULSE_TELEGRAM_BOT_TOKEN = "token_od_BotFather"
+$env:BOOKPULSE_TELEGRAM_CHAT_ID = "twoj_chat_id"
+```
+
+Token nie trafia do repozytorium. Alert powstaje tylko dla nowej oferty, która jest poniżej wyliczonego limitu zakupu i daje co najmniej `min_profit` zł.
+
 Skaner zatrzymuje się przy błędzie sieciowym lub odpowiedzi blokującej. Zniknięcie oferty jest oznaczane jako `probably_unavailable` dopiero po trzech pełnych, udanych skanach; nie jest to pewne potwierdzenie sprzedaży.
 
 ## Format danych wejściowych

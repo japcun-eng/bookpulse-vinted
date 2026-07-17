@@ -6,5 +6,7 @@
   "delay_seconds": 20,
   "request_timeout_seconds": 15,
   "scan_interval_minutes": 60,
+  "min_profit": 20,
+  "max_alerts_per_scan": 5,
   "database": "data/vinted_history.sqlite3"
 }
