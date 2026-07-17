@@ -89,6 +89,7 @@ def scan(config: dict[str, Any]) -> tuple[int, bool, str | None]:
         for category_id in category_ids:
           for page in range(1, page_limit + 1):
             pages_seen += 1
+            print(f"Skanuję kategorię {category_id}, stronę {page}/{page_limit}...", flush=True)
             params = {"catalog_ids": str(category_id), "page": page, "order": "newest_first"}
             items = scraper.search(params)
             if not items:
@@ -121,7 +122,8 @@ def scan(config: dict[str, Any]) -> tuple[int, bool, str | None]:
     db.commit()
     try:
         from alerts import send_new_opportunity_alerts
-        send_new_opportunity_alerts(db, new_ids, float(config.get("min_profit", 20)), int(config.get("max_alerts_per_scan", 5)))
+        sent = send_new_opportunity_alerts(db, new_ids, float(config.get("min_profit", 20)), int(config.get("max_alerts_per_scan", 5)))
+        print(f"Telegram: wysłano {sent} alertów.", flush=True)
     except Exception as exc:
         print(f"Alert warning: {type(exc).__name__}: {exc}")
     db.close()

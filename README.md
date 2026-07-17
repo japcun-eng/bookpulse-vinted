@@ -34,6 +34,8 @@ $env:BOOKPULSE_TELEGRAM_CHAT_ID = "twoj_chat_id"
 
 Token nie trafia do repozytorium. Alert powstaje tylko dla nowej oferty, która jest poniżej wyliczonego limitu zakupu i daje co najmniej `min_profit` zł.
 
+Test Telegrama: po ustawieniu zmiennych uruchom `python telegram_test.py`. Skaner wypisuje postęp każdej strony oraz liczbę wysłanych alertów.
+
 Skaner zatrzymuje się przy błędzie sieciowym lub odpowiedzi blokującej. Dane książkowe trafiają do osobnej bazy `data/vinted_books.sqlite3`; wcześniejsze testy ogólnego katalogu nie są używane. Zniknięcie oferty jest oznaczane jako `probably_unavailable` dopiero po trzech pełnych, udanych skanach; nie jest to pewne potwierdzenie sprzedaży.
 
 ## Format danych wejściowych
