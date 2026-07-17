@@ -71,6 +71,9 @@ def analyse(rows: list[dict]) -> list[dict]:
             "sell_through_24h": round(sell_through * 100, 1), "median_price": round(median_price, 2),
             "recommended_buy": round(recommended_buy, 2), "expected_profit": round(expected_profit, 2),
             "confidence": round(confidence * 100, 1), "score": score, "example_url": exemplar["url"],
+            "first_seen": exemplar["first_seen"],
+            "last_seen": exemplar["last_seen"],
+            "last_seen_is_disappearance": exemplar["status"] != "active",
         })
     return sorted(result, key=lambda x: x["score"], reverse=True)
 
@@ -80,9 +83,10 @@ HTML = """<!doctype html><html lang='pl'><head><meta charset='utf-8'><meta name=
 body{font:15px system-ui,sans-serif;background:#f5f7fb;color:#172033;margin:0}main{max-width:1100px;margin:0 auto;padding:36px 20px}h1{margin:0 0 5px;font-size:32px}.sub{color:#62708a;margin-bottom:28px}.cards{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px}.card{background:white;border:1px solid #e1e6ef;border-radius:12px;padding:16px 20px;min-width:170px}.num{font-size:25px;font-weight:700}.label{color:#68758b;font-size:12px;text-transform:uppercase;letter-spacing:.05em}table{background:white;border-collapse:collapse;width:100%;border:1px solid #e1e6ef;border-radius:12px;overflow:hidden}th,td{text-align:left;padding:13px 12px;border-bottom:1px solid #edf0f5}th{font-size:12px;color:#65728a;text-transform:uppercase;background:#fafbfe}tr:last-child td{border:0}.pill{font-weight:700;color:#146c43}.muted{color:#6d7890;font-size:12px}.empty{text-align:center;padding:35px;color:#68758b}a{color:#3659b8}
 </style></head><body><main><h1>BookPulse</h1><div class='sub'>Ranking książek na podstawie historii ofert — lokalne MVP</div>
 <div class='cards'><div class='card'><div class='label'>Oferty</div><div class='num' id='offers'>—</div></div><div class='card'><div class='label'>Tytuły</div><div class='num' id='titles'>—</div></div><div class='card'><div class='label'>Sprzedaże &lt;24 h</div><div class='num' id='fast'>—</div></div></div>
-<table><thead><tr><th>Ranking / książka</th><th>Sprzedaż &lt;24 h</th><th>Mediana</th><th>Max zakup</th><th>Zysk</th><th>Pewność</th></tr></thead><tbody id='rows'></tbody></table>
+<table><thead><tr><th>Ranking / książka</th><th>Wystawiono</th><th>Zniknęła</th><th>Sprzedaż &lt;24 h</th><th>Mediana</th><th>Max zakup</th><th>Zysk</th><th>Pewność</th></tr></thead><tbody id='rows'></tbody></table>
 <p class='muted'>To estymacja: zniknięcie oferty nie zawsze oznacza sprzedaż. Ceny nie uwzględniają jeszcze podatków ani indywidualnych kosztów operacyjnych.</p></main><script>
-fetch('/api/summary').then(r=>r.json()).then(d=>{document.querySelector('#offers').textContent=d.offers;document.querySelector('#titles').textContent=d.titles;document.querySelector('#fast').textContent=d.fast_sales;document.querySelector('#rows').innerHTML=d.items.map((x,i)=>`<tr><td><b>${i+1}. ${x.title}</b><br><span class='muted'>${x.author||'Nieznany autor'} · ${x.isbn||'brak ISBN'}</span></td><td>${x.sell_through_24h}%</td><td>${x.median_price.toFixed(2)} zł</td><td>${x.recommended_buy.toFixed(2)} zł</td><td class='pill'>${x.expected_profit.toFixed(2)} zł</td><td>${x.confidence}%</td></tr>`).join('')||`<tr><td colspan='6' class='empty'>Brak danych</td></tr>`})
+fetch('/api/summary').then(r=>r.json()).then(d=>{document.querySelector('#offers').textContent=d.offers;document.querySelector('#titles').textContent=d.titles;document.querySelector('#fast').textContent=d.fast_sales;document.querySelector('#rows').innerHTML=d.items.map((x,i)=>`<tr><td><b>${i+1}. ${x.title}</b><br><span class='muted'>${x.author||'Nieznany autor'} · ${x.isbn||'brak ISBN'}</span></td><td>${formatDate(x.first_seen)}</td><td>${x.last_seen_is_disappearance?formatDate(x.last_seen):'<span class="muted">nadal aktywna</span>'}</td><td>${x.sell_through_24h}%</td><td>${x.median_price.toFixed(2)} zł</td><td>${x.recommended_buy.toFixed(2)} zł</td><td class='pill'>${x.expected_profit.toFixed(2)} zł</td><td>${x.confidence}%</td></tr>`).join('')||`<tr><td colspan='8' class='empty'>Brak danych</td></tr>`})
+function formatDate(value){if(!value)return'—';const d=new Date(value);return isNaN(d)?value:d.toLocaleString('pl-PL',{dateStyle:'short',timeStyle:'short'})}
 </script></body></html>"""
 
 
