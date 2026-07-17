@@ -1,0 +1,8 @@
+source,id,title,author,isbn,price,condition,url,first_seen,last_seen,status
+OLX,olx-001,Harry Potter i Kamień Filozoficzny,J.K. Rowling,9788380082113,35,dobry,https://www.olx.pl/,2026-07-16T08:00:00+02:00,2026-07-16T16:00:00+02:00,sold
+Vinted,vin-001,Harry Potter i Kamień Filozoficzny,J.K. Rowling,9788380082113,42,bardzo dobry,https://www.vinted.pl/,2026-07-15T10:00:00+02:00,2026-07-17T10:00:00+02:00,active
+OLX,olx-002,Harry Potter i Kamień Filozoficzny,J.K. Rowling,9788380082113,30,dobry,https://www.olx.pl/,2026-07-14T09:00:00+02:00,2026-07-15T08:30:00+02:00,sold
+OLX,olx-003,Atlas chmur,David Mitchell,9788375104844,28,dobry,https://www.olx.pl/,2026-07-14T12:00:00+02:00,2026-07-17T12:00:00+02:00,active
+Vinted,vin-002,Atlas chmur,David Mitchell,9788375104844,25,dobry,https://www.vinted.pl/,2026-07-12T12:00:00+02:00,2026-07-13T12:00:00+02:00,removed
+OLX,olx-004,Atlas chmur,David Mitchell,9788375104844,32,bardzo dobry,https://www.olx.pl/,2026-07-10T12:00:00+02:00,2026-07-11T11:00:00+02:00,sold
+OLX,olx-005,Krótka historia czasu,Stephen Hawking,9788381885638,22,dobry,https://www.olx.pl/,2026-07-16T14:00:00+02:00,2026-07-17T14:00:00+02:00,expired

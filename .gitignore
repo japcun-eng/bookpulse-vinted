@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.sqlite3
+*.db
+.env
+.env.*
+secrets/
+data/*.json
+data/*.csv
+!data/listings.csv
+!.gitkeep

@@ -1,0 +1,10 @@
+{
+  "base_url": "https://www.vinted.pl",
+  "category_ids": [2319, 2320, 2336, 2363, 2364, 5425],
+  "page_count": null,
+  "max_pages": 32,
+  "delay_seconds": 20,
+  "request_timeout_seconds": 15,
+  "scan_interval_minutes": 60,
+  "database": "data/vinted_history.sqlite3"
+}
