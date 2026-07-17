@@ -8,5 +8,5 @@
   "scan_interval_minutes": 60,
   "min_profit": 20,
   "max_alerts_per_scan": 5,
-  "database": "data/vinted_history.sqlite3"
+  "database": "data/vinted_books.sqlite3"
 }

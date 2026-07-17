@@ -19,7 +19,7 @@ def parse_date(value: str) -> datetime:
 
 
 def load_listings() -> list[dict]:
-    history = ROOT / "data" / "vinted_history.sqlite3"
+    history = ROOT / "data" / "vinted_books.sqlite3"
     if history.exists():
         db = sqlite3.connect(history)
         db.row_factory = sqlite3.Row

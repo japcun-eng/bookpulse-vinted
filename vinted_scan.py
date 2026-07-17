@@ -57,7 +57,7 @@ def normalize(item: Any) -> dict[str, Any]:
     return {
         "item_id": item_id,
         "title": str(get(item, "title", "")).strip(),
-        "author": str(get(item, "brand", "") or "").strip(),
+        "author": "",
         "isbn": str(get(item, "isbn", "") or "").strip(),
         "price": float(amount) if amount not in (None, "") else None,
         "currency": currency or "PLN",
@@ -75,7 +75,7 @@ def scan(config: dict[str, Any]) -> tuple[int, bool, str | None]:
     except ImportError as exc:
         raise SystemExit("Brak vinted_scraper. Uruchom: pip install -r requirements.txt") from exc
 
-    db = init_db(ROOT / config.get("database", "data/vinted_history.sqlite3"))
+    db = init_db(ROOT / config.get("database", "data/vinted_books.sqlite3"))
     new_ids: set[str] = set()
     started = now(); seen: set[str] = set(); error = None; completed = True
     scraper = VintedScraper(
